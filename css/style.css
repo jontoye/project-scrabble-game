@@ -1,0 +1,111 @@
+ /**************************************************
+ GENERAL 
+ ***************************************************/
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-square: #cfedfb;
+    --color-tile: #f6cd97;
+    --color-dl: #30abcc;
+    --color-dw: #f04e52;
+    --color-tl: #45ce5d;
+    --color-tw: #fa732b;
+    --color-tile-text: #000;
+    --color-square-text: #FFF;
+
+    --size-square: 50px;
+    --size-tile: 50px;
+    --size-gap: 4px;
+
+    --font-square: calc(0.5 * var(--size-square));
+
+}
+
+.container {
+    margin: 0 auto;
+}
+
+ /**************************************************
+ BOARD 
+ ***************************************************/
+ .board {
+    display: grid;
+    grid-template-rows: repeat(15, var(--size-square));
+    grid-template-columns: repeat(15, var(--size-square));
+    gap: var(--size-gap);
+    width: calc(15 * var(--size-square) + 15 * var(--size-gap));
+    margin: 0 auto;
+    user-select: none;
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-square); 
+    color: var(--color-square-text);
+    font-size: var(--font-square);
+    text-transform: uppercase;
+    border-radius: 5px;
+    position: relative;
+}
+
+.square--dl {
+    background-color: var(--color-dl);
+}
+
+.square--dw {
+    background-color: var(--color-dw);
+}
+
+.square--tl {
+    background-color: var(--color-tl);
+}
+
+.square--tw {
+    background-color: var(--color-tw);
+}
+
+
+
+
+ /**************************************************
+ * ANIMATIONS
+ ***************************************************/
+@keyframes popOut {
+    from {
+        border: none;
+    }
+
+    to {
+        border: 2px solid var(--color-tile-text);
+        transform: scale(1.5);
+        z-index: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        border: 2px solid var(--color-tile-text);
+        transform: scale(1.5);
+        z-index: 1;
+    }
+
+    to {
+        border: none;
+        transform: scale(1);
+        z-index: 0;
+    }
+}
+
+.pop-in {
+    animation: popIn 0.3s forwards;
+}
+
+.pop-out {
+    animation: popOut 0.3s forwards;
+}
