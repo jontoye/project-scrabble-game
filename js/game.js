@@ -1,5 +1,4 @@
-import { bonusSquares } from './gameConfig.js';
-import { letterBag } from './gameConfig.js';
+import * as config from './gameConfig.js';
 import { view } from './view.js';
 
 const BOARD_HEIGHT = 15;
@@ -11,6 +10,7 @@ export const game = {
     tiles: [],
     whosTurn: null,
     playing: false,
+    validSquares: [],
     validWords: [],
 
     init() {
@@ -20,42 +20,57 @@ export const game = {
     
 
     initBoard() {
-        for (let row = 0; row < BOARD_HEIGHT; row++) {
-            for (let col = 0; col < BOARD_WIDTH; col++) {
+        for (let row = 0; row < config.BOARD_HEIGHT; row++) {
+            for (let col = 0; col < config.BOARD_WIDTH; col++) {
                 this.board.push( {
-                    row: row, 
-                    col: col, 
+                    id: `${row}-${col}`,
+                    // row: row, 
+                    // col: col, 
                     type: null, 
-                    currentTile: null
+                    currentTile: null,
+                    isPlayable: false,
+
+                    getRow: function() {
+                        return Number(this.id.split('-')[0]);
+                    },
+
+                    getCol: function() {
+                        return Number(this.id.split('-')[1]);
+                    }
                 }) ;
             }
         }
     
         // Add square-type value for bonus squares
-        for (let type in bonusSquares) {
-            bonusSquares[type].forEach(coord => {
+        for (let type in config.BONUS_SQUARES) {
+            config.BONUS_SQUARES[type].forEach(coord => {
                 let square = this.board.find(s => {
-                    return s.row === coord[0] && s.col === coord[1];
+                    return (s.getRow() === coord[0]) && (s.getCol() === coord[1]);
                 });
                 square.type = type;
             });
         }
+
+        // Initialize valid squares array here too
+
+
+        
     },
 
     // Initialize letter tile objects, each tile has a unique ID
     initTiles() {
         let tileID = 0;
-        for (let letter in letterBag) {
-            for (let i = 0 ; i < letterBag[letter].count; i++) {
+        for (let letter in config.LETTER_BAG) {
+            for (let i = 0 ; i < config.LETTER_BAG[letter].count; i++) {
                 this.tiles.push({
                     id: tileID,
                     letter: letter == 'blank' ? '' : letter,
-                    points: letterBag[letter].points
+                    points: config.LETTER_BAG[letter].points
                 });
                 tileID++;
             }
         }
-    },    
+    }, 
 
     // Add a new player to this game object
     addPlayer(name) {
@@ -69,25 +84,25 @@ export const game = {
         let newPlayer = this.players[this.players.length - 1];
 
         // Fill players rack with tiles
-        while (this.moveTileToPlayer(newPlayer)) {
-            this.moveTileToPlayer(newPlayer);
+        while (this.transferTile(this.tiles, newPlayer)) {
+            this.transferTile(this.tiles, newPlayer);
         }
 
         
     },
 
-    // Get random tile from bag and assign to designated player
-    moveTileToPlayer(player) {
-        // TODO: check if letterbag is empty before assigning tiles
-       
-        // Won't allow more than 7 tiles per player
-        if (player.tilesOnRack.length < 7) {
-            let randomIndex = Math.floor(Math.random() * this.tiles.length);
-            let newTile = this.tiles.splice(randomIndex, 1);
-            player.tilesOnRack.push(newTile);
-            return true;
-        } else {
-            return false;
+    transferTile(from, to) {
+        // Transfer from letterbag to player
+        if (from === this.tiles) {
+            let player = to;
+            if (player.tilesOnRack.length < 7) {
+                let randomIndex = Math.floor(Math.random() * this.tiles.length);
+                let newTile = this.tiles.splice(randomIndex, 1)[0];
+                player.tilesOnRack.push(newTile);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 

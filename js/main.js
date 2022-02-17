@@ -7,13 +7,14 @@ console.log('Welcome to Scrabble!')
 
 // START GAME
 game.init();  
-view.renderBoard();
-view.addListeners();
+view.renderBoard(game.board);
 
 game.addPlayer('Player 1');
 game.addPlayer('Player 2');
 
+view.renderPlayerRacks(game.players);
 
+view.addListeners();
 
 
 

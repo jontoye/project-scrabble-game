@@ -1,4 +1,8 @@
-export const bonusSquares = {
+export const BOARD_HEIGHT = 15;
+export const BOARD_WIDTH = 15;
+export const MAX_PLAYERS = 4;
+
+export const BONUS_SQUARES = {
     'dl': [
         [3,0], [11,0],
         [6,2], [8,2],
@@ -34,7 +38,7 @@ export const bonusSquares = {
     ]
 }
 
-export const letterBag = {
+export const LETTER_BAG = {
     a: {count: 9, points: 1},
     b: {count: 2, points: 3},
     c: {count: 2, points: 3},

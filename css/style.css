@@ -17,11 +17,13 @@
     --color-tile-text: #000;
     --color-square-text: #FFF;
 
-    --size-square: 50px;
-    --size-tile: 50px;
-    --size-gap: 4px;
+    --size-square: 40px;
+    --size-square-gap: 4px;
+    --size-tile: 55px;
 
-    --font-square: calc(0.5 * var(--size-square));
+    --font-stack: sans-serif;
+
+    --font-size: calc(0.5 * var(--size-square));
 
 }
 
@@ -36,8 +38,8 @@
     display: grid;
     grid-template-rows: repeat(15, var(--size-square));
     grid-template-columns: repeat(15, var(--size-square));
-    gap: var(--size-gap);
-    width: calc(15 * var(--size-square) + 15 * var(--size-gap));
+    gap: var(--size-square-gap);
+    width: calc(15 * var(--size-square) + 15 * var(--size-square-gap));
     margin: 0 auto;
     user-select: none;
 }
@@ -48,7 +50,7 @@
     align-items: center;
     background-color: var(--color-square); 
     color: var(--color-square-text);
-    font-size: var(--font-square);
+    font-size: var(--font-size);
     text-transform: uppercase;
     border-radius: 5px;
     position: relative;
@@ -71,6 +73,66 @@
 }
 
 
+ /**************************************************
+ * TILE RACKS
+ ***************************************************/
+.tile-area {
+    display: flex;
+    flex-direction: column;
+    margin: 15px auto;
+    max-width: 600px;
+
+    border: 1px solid red;
+}
+
+.player-rack {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    height: 100%;
+}
+
+.player-rack__slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+}
+
+.tile {
+    background-color: var(--color-tile);
+    color: var(--color-tile-text);
+    width: var(--size-tile);
+    height: var(--size-tile);
+    font-family: var(--font-stack);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.tile__letter {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.6em;
+}
+
+.tile__point-value {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    font-size: 0.6em;
+}
+
+/* Shrink tile to fit when on square */
+.square .tile {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
 
 
  /**************************************************
@@ -88,24 +150,6 @@
     }
 }
 
-@keyframes popIn {
-    from {
-        border: 2px solid var(--color-tile-text);
-        transform: scale(1.5);
-        z-index: 1;
-    }
-
-    to {
-        border: none;
-        transform: scale(1);
-        z-index: 0;
-    }
-}
-
-.pop-in {
-    animation: popIn 0.3s forwards;
-}
-
 .pop-out {
-    animation: popOut 0.3s forwards;
+    animation: popOut 0.2s forwards;
 }
