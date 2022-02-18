@@ -1,3 +1,17 @@
+// https://www.wisdomgeek.com/development/web-development/javascript/json-modules-in-javascript/
+// https://github.com/dwyl/english-words/blob/master/words_dictionary.json
+import words from '../data/words.json' assert { type: "json"};
+
+
+// Delete any words from dictionary that are greater than 15 letters and less than 2
+Object.keys(words).forEach(word => {
+    if (word.length > 15 || word.length < 2) {
+        delete words[word];
+    }
+})
+
+export const VALID_WORDS = words;
+
 export const BOARD_HEIGHT = 15;
 export const BOARD_WIDTH = 15;
 export const MAX_PLAYERS = 4;

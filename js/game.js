@@ -1,8 +1,6 @@
 import * as config from './gameConfig.js';
 import { view } from './view.js';
 
-const BOARD_HEIGHT = 15;
-const BOARD_WIDTH = 15;
 
 export const game = {
     board: [],
@@ -10,22 +8,20 @@ export const game = {
     tiles: [],
     whosTurn: null,
     playing: false,
-    validSquares: [],
-    validWords: [],
+    currentActiveSquares: [],
 
     init() {
         this.initBoard();
         this.initTiles();
     },
-    
 
     initBoard() {
         for (let row = 0; row < config.BOARD_HEIGHT; row++) {
             for (let col = 0; col < config.BOARD_WIDTH; col++) {
                 this.board.push( {
                     id: `${row}-${col}`,
-                    // row: row, 
-                    // col: col, 
+                    row: row,
+                    col: col,
                     type: null, 
                     currentTile: null,
                     isPlayable: false,
@@ -38,6 +34,7 @@ export const game = {
                         return Number(this.id.split('-')[1]);
                     }
                 }) ;
+
             }
         }
     
@@ -50,11 +47,7 @@ export const game = {
                 square.type = type;
             });
         }
-
-        // Initialize valid squares array here too
-
-
-        
+       
     },
 
     // Initialize letter tile objects, each tile has a unique ID
@@ -63,7 +56,7 @@ export const game = {
         for (let letter in config.LETTER_BAG) {
             for (let i = 0 ; i < config.LETTER_BAG[letter].count; i++) {
                 this.tiles.push({
-                    id: tileID,
+                    id: 't-' + tileID,
                     letter: letter == 'blank' ? '' : letter,
                     points: config.LETTER_BAG[letter].points
                 });
@@ -103,6 +96,14 @@ export const game = {
             } else {
                 return false;
             }
+        }
+    },
+
+    evaluateWord(word) {
+        if (config.VALID_WORDS[word]) {
+            console.log('The word just played was: ', word);
+        } else {
+            console.log('Invalid word. Try again');
         }
     }
 

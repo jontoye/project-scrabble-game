@@ -6,6 +6,13 @@ export const view = {
 
     elements: {},
 
+    render(gameState) {
+        this.renderBoard(gameState.board);
+        this.renderPlayerRacks(gameState.players);
+        this.elements.buttons = document.querySelectorAll('button');
+        this.addListeners();
+    },
+
     // Receives an array of squares representing the gameboard 
     renderBoard(gameBoard) {
 
@@ -17,7 +24,7 @@ export const view = {
 
         gameBoard.forEach(squareObj => {
             const element = this.createElement('div', 'square');
-            element.id = `${squareObj.getRow()}-${squareObj.getCol()}`;
+            element.id = squareObj.row * 15 + squareObj.col;
 
             // For special squares
             if (squareObj.type) {
@@ -63,15 +70,20 @@ export const view = {
     addListeners() {
 
         // add listeners to tile area and board
-        this.elements.tileArea.addEventListener('dragstart', handle.dragstart);
-        this.elements.tileArea.addEventListener('dragover', handle.ondragover);
-        this.elements.tileArea.addEventListener('dragleave', handle.ondragleave);
-        this.elements.tileArea.addEventListener('drop', handle.ondrop);
+        this.elements.tileArea.addEventListener('dragstart', handle.onDragStart);
+        this.elements.tileArea.addEventListener('dragover', handle.onDragOver);
+        this.elements.tileArea.addEventListener('dragleave', handle.onDragLeave);
+        this.elements.tileArea.addEventListener('drop', handle.onDrop);
 
-        this.elements.board.addEventListener('dragstart', handle.dragstart);
-        this.elements.board.addEventListener('dragover', handle.ondragover);
-        this.elements.board.addEventListener('dragleave', handle.ondragleave);
-        this.elements.board.addEventListener('drop', handle.ondrop);
+        this.elements.board.addEventListener('dragstart', handle.onDragStart);
+        this.elements.board.addEventListener('dragover', handle.onDragOver);
+        this.elements.board.addEventListener('dragleave', handle.onDragLeave);
+        this.elements.board.addEventListener('drop', handle.onDrop);
+
+        // button listners
+        this.elements.buttons.forEach(button => {
+            button.addEventListener('click', handle.onButtonClick);
+        })
     },
 
 

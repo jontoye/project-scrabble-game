@@ -17,18 +17,28 @@
     --color-tile-text: #000;
     --color-square-text: #FFF;
 
-    --size-square: 40px;
+    --size-square: 37px;
     --size-square-gap: 4px;
     --size-tile: 55px;
 
     --font-stack: sans-serif;
 
-    --font-size: calc(0.5 * var(--size-square));
+    --font-size: calc(0.4 * var(--size-square));
 
 }
 
 .container {
-    margin: 0 auto;
+    display: flex;
+
+}
+
+.game-area {
+    width: 60%;
+}
+
+.stats-area {
+    display: flex;
+    align-items: flex-end;
 }
 
  /**************************************************
@@ -134,10 +144,18 @@
 }
 
 
+/**************************************************
+* BUTTONS
+***************************************************/
+button {
+    padding: 20px;
+    margin: 10px;
+}
 
- /**************************************************
- * ANIMATIONS
- ***************************************************/
+
+/**************************************************
+* ANIMATIONS
+***************************************************/
 @keyframes popOut {
     from {
         border: none;
