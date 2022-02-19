@@ -1,4 +1,3 @@
-import { game } from './game.js';
 import { handle } from './handle.js';
 
 
@@ -86,10 +85,84 @@ export const view = {
         })
     },
 
+    focusSquare(element) {
+        element.classList.add('pop-out');
+    },
+
+    removeFocusSquare(element) {
+        element.classList.remove('pop-out');
+    },
 
 
+    moveTileToBoard(elementID, boardID) {
+        let tileElement = document.getElementById(elementID);
+        let squareElement = document.getElementById(boardID);
+        
+        if (squareElement.childNodes.length < 2) {
+            squareElement.append(tileElement);
+            this.removeFocusSquare(tileElement.parentNode);
+        }
+    },
+
+    moveTileToRack(elementID, rackSlot) {
+        let tileElement = document.getElementById(elementID);       
+        
+        // Allow the drop area to only be a slot
+        while (!rackSlot.classList.contains('player-rack__slot')) {
+            rackSlot = rackSlot.parentNode;
+        }
+        // console.log('tile: ', tileElement);
+        // console.log('rackSlot: ', rackSlot);
+        
+        // Slot is empty
+        if (!rackSlot.hasChildNodes()) {
+            rackSlot.append(tileElement);
+        } 
+
+        // Slot already contains a tile, so shift it to the next available empty slot
+        else {
+
+            // prev and next of slots on end of rack will default to current drop area
+            let tileToMove = rackSlot.firstChild;
+            let prevSlot = rackSlot.previousSibling || rackSlot;
+            let nextSlot = rackSlot.nextSibling || rackSlot;
+
+            // console.log('tile to move', tileToMove);
+            // console.log('prev slot', prevSlot);
+            // console.log('next slot', nextSlot);
+
+            if (tileElement === tileToMove) return;
+
+            // Previous slot is empty
+            if (!prevSlot.hasChildNodes()) {
+                prevSlot.append(tileToMove);
+                rackSlot.append(tileElement);
+            } 
+            // Next slot is empty
+            else if (!nextSlot.hasChildNodes()) {
+                nextSlot.append(tileToMove);
+                rackSlot.append(tileElement);
+            } 
+            // Need to swap tiles
+            else {
+                // console.log('SWAP: ', tileElement.parentNode, tileToMove.parentNode);
+                this.swapTiles(tileElement.parentNode, tileToMove.parentNode)
+            }
+        }
+
+
+    },
+
+      
     /*********** Helpers ***********/
-
+    swapTiles(slotA, slotB) {
+        // console.log('slots', slotA, slotB);
+        let tileA = slotA.removeChild(slotA.firstChild);
+        let tileB = slotB.removeChild(slotB.firstChild);
+        slotA.append(tileB);
+        slotB.append(tileA);
+    },
+    
     createElement(tag, className) {
         const element = document.createElement(tag);
         if (className) element.classList.add(className);
