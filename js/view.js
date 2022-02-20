@@ -1,6 +1,5 @@
 import { handle } from './handle.js';
 
-
 export const view = {
 
     elements: {},
@@ -12,9 +11,7 @@ export const view = {
         this.addListeners();
     },
 
-    // Receives an array of squares representing the gameboard 
     renderBoard(gameBoard) {
-
         const board = this.getElement('.board');
         this.elements.board = board;
 
@@ -37,37 +34,39 @@ export const view = {
         })
     },
 
-
     renderPlayerRacks(players) {
-
-        players.forEach(player => {
-            let playerRack = this.createElement('div', 'player-rack');
-            playerRack.id = 'rack-' + player.name.toLowerCase().replace(' ', '-');
+        players.forEach((player, i) => {
+            let playerRack = this.createElement('div', 'player-rack', 'hidden'); 
+            // let playerRack = this.createElement('div', 'player-rack');  // FOR TESTING --> doesnt hide racks
+            playerRack.id = 'rack-' + i;
 
             for (let i = 0; i < 7; i++) {
                 let currentTile = player.tilesOnRack[i];
                 let slot = this.createElement('div', 'player-rack__slot');
                 playerRack.append(slot);
 
-                let tile = this.createElement('div', 'tile');
-                tile.id = currentTile.id;
-                tile.setAttribute('data-letter', currentTile.letter);
-                tile.setAttribute('data-points', currentTile.points);
-                tile.setAttribute('draggable', 'true');
-                tile.innerHTML = `
-                <div class="tile__letter">${tile.dataset.letter}</div>
-                <div class="tile__point-value">${tile.dataset.points}</div>`;
+                let tile = this.renderTile(currentTile.id, currentTile.letter, currentTile.points);
                 slot.append(tile);
             }
-
             this.elements.tileArea.append(playerRack);
         })
+    },
 
+    renderTile(id, letter, points) {
+        let tile = this.createElement('div', 'tile');
+        tile.id = id;
+        tile.setAttribute('data-letter', letter);
+        tile.setAttribute('data-points', points);
+        tile.setAttribute('draggable', 'true');
+        tile.innerHTML = `
+        <div class="tile__letter">${tile.dataset.letter}</div>
+        <div class="tile__point-value">${tile.dataset.points}</div>`;
+
+        return tile;
     },
 
 
     addListeners() {
-
         // add listeners to tile area and board
         this.elements.tileArea.addEventListener('dragstart', handle.onDragStart);
         this.elements.tileArea.addEventListener('dragover', handle.onDragOver);
@@ -93,7 +92,6 @@ export const view = {
         element.classList.remove('pop-out');
     },
 
-
     moveTileToBoard(elementID, boardID) {
         let tileElement = document.getElementById(elementID);
         let squareElement = document.getElementById(boardID);
@@ -111,8 +109,6 @@ export const view = {
         while (!rackSlot.classList.contains('player-rack__slot')) {
             rackSlot = rackSlot.parentNode;
         }
-        // console.log('tile: ', tileElement);
-        // console.log('rackSlot: ', rackSlot);
         
         // Slot is empty
         if (!rackSlot.hasChildNodes()) {
@@ -126,10 +122,6 @@ export const view = {
             let tileToMove = rackSlot.firstChild;
             let prevSlot = rackSlot.previousSibling || rackSlot;
             let nextSlot = rackSlot.nextSibling || rackSlot;
-
-            // console.log('tile to move', tileToMove);
-            // console.log('prev slot', prevSlot);
-            // console.log('next slot', nextSlot);
 
             if (tileElement === tileToMove) return;
 
@@ -145,12 +137,25 @@ export const view = {
             } 
             // Need to swap tiles
             else {
-                // console.log('SWAP: ', tileElement.parentNode, tileToMove.parentNode);
                 this.swapTiles(tileElement.parentNode, tileToMove.parentNode)
             }
         }
+    },
 
+    showPlayerRack(id) {
+        let element = document.querySelector(`#rack-${id}`);
+        element.classList.remove('hidden');        
+    },
 
+    hidePlayerRack(id) {
+        let element = document.querySelector(`#rack-${id}`);
+        element.classList.add('hidden');        
+    },
+
+    freezeTile(squareID) {
+        let square = document.getElementById(squareID);
+        let tile = square.querySelector('.tile');
+        tile.removeAttribute('draggable');
     },
 
       
@@ -163,9 +168,9 @@ export const view = {
         slotB.append(tileA);
     },
     
-    createElement(tag, className) {
+    createElement(tag, ...classNames) {
         const element = document.createElement(tag);
-        if (className) element.classList.add(className);
+        classNames.forEach(name => element.classList.add(name));
 
         return element;
     },
@@ -177,7 +182,5 @@ export const view = {
     getAllElements(selector) {
         return document.querySelectorAll(selector);
     },   
-
-
-
+    
 }

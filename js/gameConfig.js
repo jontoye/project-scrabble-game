@@ -16,6 +16,13 @@ export const BOARD_HEIGHT = 15;
 export const BOARD_WIDTH = 15;
 export const MAX_PLAYERS = 4;
 
+export const MULTIPLIERS = {
+    dl: 2,
+    dw: 2,
+    tl: 3,
+    tw: 3,
+}
+
 export const BONUS_SQUARES = {
     'dl': [
         [3,0], [11,0],
@@ -79,5 +86,5 @@ export const LETTER_BAG = {
     x: {count: 1, points: 8},
     y: {count: 2, points: 4},
     z: {count: 1, points: 10},
-    blank: {count: 2, points: 0}
+    // blank: {count: 2, points: 0}     // removed for testing
 }

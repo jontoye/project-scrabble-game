@@ -38,7 +38,8 @@
 
 .stats-area {
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
  /**************************************************
@@ -143,6 +144,14 @@
     height: 100%;
 }
 
+ /**************************************************
+ * STATS AREA
+ ***************************************************/
+.player-card {
+     margin: 20px;
+}
+
+
 
 /**************************************************
 * BUTTONS
@@ -170,4 +179,9 @@ button {
 
 .pop-out {
     animation: popOut 0.2s forwards;
+}
+
+
+.hidden {
+    display: none;
 }
