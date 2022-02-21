@@ -38,7 +38,6 @@ export const game = {
                 square.type = type;
             });
         }
-       
     },
 
     // Initialize letter tile objects, each tile has a unique ID
@@ -62,7 +61,8 @@ export const game = {
             name: name, 
             score: 0, 
             tilesOnRack: [], 
-            tilesOnBoard: []
+            tilesOnBoard: [],
+            bestWord: { word: '', points: 0 },
         });
 
         let newPlayer = this.players[this.players.length - 1];
@@ -152,29 +152,28 @@ export const game = {
                 this.currentAdjacentSquares.splice(this.currentAdjacentSquares.findIndex(i => i === boardID), 1);
             }
 
-            let toRight = boardID + 1;
-            let toLeft = boardID -1;
-            let toTop = boardID - 15;
-            let toBot = boardID +15;
+            let toRight = (boardID + 1) % 15 === 0 ? boardID : boardID + 1;
+            let toLeft = (boardID - 1) % 15 === 14 ? boardID : boardID -1;
+            let toTop = (boardID - 15) < 0 ? boardID : boardID - 15;
+            let toBot = (boardID + 15) > 224 ? boardID : boardID + 15;
 
             [toRight, toLeft, toTop, toBot].forEach(id => {
-                if (id > 224 || id < 0) { return; }
                 if (this.board[id].currentTile === null) {
                     this.currentAdjacentSquares.push(id);
                 }
             })
-
         })
-
     },
 
     getAdjacentHorizontalLetters(boardID) {
         let adjacent = { letters: [], loc: [] };
 
         // traverse to the left until empty square 
-        while (this.board[boardID - 1].currentTile) {
-            boardID--;
-            if (boardID < 0) { break; }
+        if (boardID % 15 !== 0) {   // no need to go left if already at 1st col
+            while (this.board[boardID - 1].currentTile) {
+                boardID--;
+                if (boardID % 15 === 0) { break; }      // reached 1st col
+            }          
         }
 
         // traverse right, collecting letters
@@ -182,7 +181,7 @@ export const game = {
             adjacent.letters.push(this.board[boardID].currentTile);
             adjacent.loc.push(boardID);
             boardID++;
-            if (boardID > 224) { break; }
+            if (boardID % 15 === 14) { break; }  // reached last col
         }
 
         return adjacent.letters.length > 1 ? adjacent : null;
@@ -192,9 +191,11 @@ export const game = {
         let adjacent = { letters: [], loc: [] };
 
         // traverse up until empty square
-        while (this.board[boardID - 15].currentTile) {
-            boardID -= 15;
-            if (boardID < 0) { break; }
+        if (boardID > 14) {     // no need to go up if already at first row
+            while (this.board[boardID - 15].currentTile) {
+                boardID -= 15;
+                if (boardID < 0) { break; }     // reached 1st row
+            }
         }
 
         // traverse down, collecting letters
@@ -202,7 +203,7 @@ export const game = {
             adjacent.letters.push(this.board[boardID].currentTile);
             adjacent.loc.push(boardID);
             boardID += 15;
-            if (boardID > 224) { break; }
+            if (boardID > 224) { break; }    // reached end of board
         }
 
         return adjacent.letters.length > 1 ? adjacent : null;

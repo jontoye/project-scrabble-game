@@ -8,6 +8,8 @@ export const view = {
         this.renderBoard(gameState.board);
         this.renderPlayerRacks(gameState.players);
         this.elements.buttons = document.querySelectorAll('button');
+        this.elements.scores = document.querySelectorAll('.player-card__score > span');
+        this.elements.bestWord = document.querySelectorAll('.player-card__best-word > span');
         this.addListeners();
     },
 
@@ -63,6 +65,11 @@ export const view = {
         <div class="tile__point-value">${tile.dataset.points}</div>`;
 
         return tile;
+    },
+
+    renderPlayerStats(playerID, score, best) {
+        this.elements.scores[playerID].innerText = score;
+        this.elements.bestWord[playerID].innerText = best.word + ' || ' + best.points;
     },
 
 

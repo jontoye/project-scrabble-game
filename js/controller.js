@@ -22,6 +22,9 @@ export const controller = {
         });
 
         // update player stats
+        view.renderPlayerStats(game.whosTurn, 
+                               game.players[game.whosTurn].score, 
+                               game.players[game.whosTurn].bestWord);
 
         // update board data
         game.updateAdjacentSquares();

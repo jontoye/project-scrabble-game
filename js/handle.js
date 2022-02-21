@@ -50,14 +50,15 @@ export const handle = {
 
         // Play word button
         if (e.target.id === 'playWordBtn') {
-
-            let playedSquares = game.currentPlayedSquares;
+            
+            const currentPlayer = game.players[game.whosTurn];
+            const playedSquares = game.currentPlayedSquares;
+            const wordCache = {};   // for storing valid words and their point score
             let connectedToTiles;
             let wordsInPlay = [];
             let validPlay = true;
             let isHorizontal = true;
             let isVertical = true;
-            let turnPoints = 0;
 
             // check that at least 1 played tile is connected to an existing tile
             connectedToTiles = game.currentPlayedSquares.filter(id => game.currentAdjacentSquares.includes(id)).length > 0;
@@ -118,13 +119,15 @@ export const handle = {
             
             // Check each word in play and determine points
             if (wordsInPlay.length > 0) {
-                wordsInPlay.forEach(word => {
-                    if (game.isValidWord(word)) {
-                        let wordPoints = game.scoreWord(word);
-                        console.log(`${game.players[game.whosTurn].name} scored ${wordPoints} for ${word.letters.join('')}`);
-                        turnPoints += wordPoints;
+                
+                wordsInPlay.forEach(wordObj => {
+                    let currentWord = wordObj.letters.join('');
+
+                    if (game.isValidWord(wordObj)) {
+                        let currentWordPoints = game.scoreWord(wordObj);
+                        wordCache[currentWord] = currentWordPoints;
                     } else { 
-                        console.log(`${word.letters.join('')} is not a word`);
+                        console.log(`${currentWord} is not a word`);
                         validPlay = false; 
                     }
                 })
@@ -132,8 +135,16 @@ export const handle = {
     
             // Update player score and end turn
             if (validPlay) {
-                game.players[game.whosTurn].score += turnPoints;
-                console.log('Total points for', game.players[game.whosTurn].name, ': ', game.players[game.whosTurn].score);
+                for (let word in wordCache) {
+                    if (wordCache[word] >= currentPlayer.bestWord.points) {
+                        currentPlayer.bestWord.word = word;
+                        currentPlayer.bestWord.points = wordCache[word];
+                    }
+                    currentPlayer.score += wordCache[word];
+                    console.log(`${currentPlayer.name} scored ${wordCache[word]} points for ${word}`);
+                }
+
+                console.log('Total points for', currentPlayer.name, ': ', currentPlayer.score);
                 controller.endTurn();
             }
         }
