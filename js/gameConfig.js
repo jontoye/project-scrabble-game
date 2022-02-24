@@ -23,7 +23,7 @@ export const MULTIPLIERS = {
     tw: 3,
 }
 
-export const BONUS_SQUARES = {
+export const BOARD_BONUS_SQUARES = {
     'dl': [
         [3,0], [11,0],
         [6,2], [8,2],

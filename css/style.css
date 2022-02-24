@@ -5,11 +5,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
+    /* border: 1px solid gray; */
 }
 
 :root {
     --color-square: #cfedfb;
     --color-tile: #f6cd97;
+    --color-rack: #744911;
     --color-dl: #30abcc;
     --color-dw: #f04e52;
     --color-tl: #45ce5d;
@@ -27,19 +30,23 @@
 
 }
 
+html {
+    font-family: var(--font-stack);
+}
+
 .container {
     display: flex;
+    justify-content: center;
+    gap: 20px;
 
 }
 
 .game-area {
-    width: 60%;
+    
 }
 
 .stats-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+
 }
 
  /**************************************************
@@ -87,20 +94,36 @@
  /**************************************************
  * TILE RACKS
  ***************************************************/
-.tile-area {
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    margin-top: 10px;
+}
+
+.buttons {
     display: flex;
     flex-direction: column;
-    margin: 15px auto;
-    max-width: 600px;
-
-    border: 1px solid red;
+    /* justify-content: flex-start; */
 }
+
+ .tile-area {
+    background-color: var(--color-dw);
+
+}
+
+
+/* he÷ight: 100px; */
 
 .player-rack {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: 100%;
     height: 100%;
+
 }
+
 
 .player-rack__slot {
     display: flex;
@@ -144,11 +167,40 @@
     height: 100%;
 }
 
+.dragging {
+    opacity: 0.7;
+}
+
+
  /**************************************************
  * STATS AREA
  ***************************************************/
 .player-card {
-     margin: 20px;
+    border: 1px solid var(--color-square);
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    padding: 10px 25px;
+
+}
+
+.active {
+    border: 2px solid var(--color-dw);
+}
+
+.player-card__stats {
+    padding: 5px 25px;
+}
+
+.player-card__score {
+    padding: 6px;
+    font-size: 24px;
+}
+
+.player-card__best-word {
+    padding: 6px;
+    text-transform: uppercase;
+    font-size: 14px;
 }
 
 
@@ -157,8 +209,8 @@
 * BUTTONS
 ***************************************************/
 button {
-    padding: 20px;
-    margin: 10px;
+    font-family: inherit;
+    padding: 5px 15px;
 }
 
 

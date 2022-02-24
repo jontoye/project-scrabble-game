@@ -1,193 +1,213 @@
-import { handle } from './handle.js';
+import { Event } from "./Event.js";
 
-export const view = {
+export class View {
+    constructor() {
+        // DOM Elements
+        this.boardEl = document.querySelector('.board');
+        this.tileArea = document.querySelector('.tile-area');
+        this.statsArea = document.querySelector('.stats-area');
+        this.playerCards = document.querySelectorAll('.player-card');
+        this.scores = document.querySelectorAll('.player-card__score > span');
+        this.bestWord = document.querySelectorAll('.player-card__best-word > span');
+        this.racks = [];
 
-    elements: {},
+        this.playBtn = document.getElementById('playBtn');
+        this.shuffleBtn = document.getElementById('shuffleBtn');
+        this.recallBtn = document.getElementById('recallBtn');
+        this.exchangeBtn = document.getElementById('exchangeBtn');
+        this.passBtn = document.getElementById('passBtn');
+        this.forfeitBtn = document.getElementById('forfeitBtn');
 
-    render(gameState) {
-        this.renderBoard(gameState.board);
-        this.renderPlayerRacks(gameState.players);
-        this.elements.buttons = document.querySelectorAll('button');
-        this.elements.scores = document.querySelectorAll('.player-card__score > span');
-        this.elements.bestWord = document.querySelectorAll('.player-card__best-word > span');
-        this.addListeners();
-    },
+        // Tile Events
+        this.tilePickedUpEvent = new Event();
+        this.tileDropBoardEvent = new Event();
+        this.tileDropRackEvent = new Event();
+        this.tileHoverEvent = new Event();
 
-    renderBoard(gameBoard) {
-        const board = this.getElement('.board');
-        this.elements.board = board;
+        // Button Events
+        this.wordPlayedEvent = new Event();
+        this.tileRecallEvent = new Event();
+        this.exchangeEvent = new Event();
+        this.passTurnEvent = new Event();
+        this.forfeitEvent = new Event();
 
-        const tileArea = this.getElement('.tile-area');
-        this.elements.tileArea = tileArea;
+        // Add event listeners
+        this.playBtn.addEventListener('click', () => this.wordPlayedEvent.trigger());
+        this.passBtn.addEventListener('click', () => this.passTurnEvent.trigger());
+        this.recallBtn.addEventListener('click', () => this.tileRecallEvent.trigger());
+        this.shuffleBtn.addEventListener('click', () => this.shuffleTiles());
+    }
 
-        gameBoard.forEach(squareObj => {
-            const element = this.createElement('div', 'square');
-            element.id = squareObj.row * 15 + squareObj.col;
+    // Initialize board
+    renderBoard(boardSquares) {
+        boardSquares.forEach(squareObj => {
+            const squareEl = this.createSquareElement(squareObj.row, squareObj.col, squareObj.type);
+            this.boardEl.append(squareEl);
+        })    
+    }
 
-            // For special squares
-            if (squareObj.type) {
-                element.classList.add(`square--${squareObj.type}`);
-                element.setAttribute('data-type', squareObj.type)
-                element.innerHTML = element.dataset.type;
-            }
+    // Initialize player rack
+    renderRack(tiles) {
+        const rackEl = this.createElement('div', 'player-rack', 'hidden'); 
+        // let playerRack = this.createElement('div', 'player-rack');  // FOR TESTING --> doesnt hide racks
 
-            // Append to board
-            this.elements.board.append(element);
-        })
-    },
+        // add event listeners
+        rackEl.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.tileHoverEvent.trigger(e)
+            // this.shiftTiles(e);
+        });
+        rackEl.addEventListener('drop', (e) => {
+            this.tileDropRackEvent.trigger();
+        });
 
-    renderPlayerRacks(players) {
-        players.forEach((player, i) => {
-            let playerRack = this.createElement('div', 'player-rack', 'hidden'); 
-            // let playerRack = this.createElement('div', 'player-rack');  // FOR TESTING --> doesnt hide racks
-            playerRack.id = 'rack-' + i;
+        tiles.forEach(tile => {
+            const tileEl = this.createTileElement(tile.id, tile.letter, tile.points);
+            rackEl.append(tileEl);
+        });
+        this.tileArea.append(rackEl);
+        this.racks.push(rackEl);
 
-            for (let i = 0; i < 7; i++) {
-                let currentTile = player.tilesOnRack[i];
-                let slot = this.createElement('div', 'player-rack__slot');
-                playerRack.append(slot);
+    }
 
-                let tile = this.renderTile(currentTile.id, currentTile.letter, currentTile.points);
-                slot.append(tile);
-            }
-            this.elements.tileArea.append(playerRack);
-        })
-    },
-
-    renderTile(id, letter, points) {
-        let tile = this.createElement('div', 'tile');
-        tile.id = id;
-        tile.setAttribute('data-letter', letter);
-        tile.setAttribute('data-points', points);
-        tile.setAttribute('draggable', 'true');
-        tile.innerHTML = `
-        <div class="tile__letter">${tile.dataset.letter}</div>
-        <div class="tile__point-value">${tile.dataset.points}</div>`;
-
-        return tile;
-    },
-
+    // Update stats view
     renderPlayerStats(playerID, score, best) {
-        this.elements.scores[playerID].innerText = score;
-        this.elements.bestWord[playerID].innerText = best.word + ' || ' + best.points;
-    },
+        this.playerCards.forEach(card => card.classList.remove('active'));
+        this.playerCards[playerID].classList.add('active');
+        this.scores[playerID].innerText = score;
+        this.bestWord[playerID].innerText = best.word + '(' + best.points + 'pts)';
+    }
+
+    setActivePlayer(id) {
+        this.playerCards.forEach(card => card.classList.remove('active'));
+        this.playerCards[id].classList.add('active');
+        let rackEls = this.tileArea.querySelectorAll('.player-rack');
+        rackEls.forEach(rack => rack.classList.add('hidden'));
+        rackEls[id].classList.remove('hidden');        
+    }
 
 
-    addListeners() {
-        // add listeners to tile area and board
-        this.elements.tileArea.addEventListener('dragstart', handle.onDragStart);
-        this.elements.tileArea.addEventListener('dragover', handle.onDragOver);
-        this.elements.tileArea.addEventListener('dragleave', handle.onDragLeave);
-        this.elements.tileArea.addEventListener('drop', handle.onDrop);
+    /**********************   Tile updates  **************************/ 
+    moveTileToBoard(tileID, squareID) {
+        let tileEl = document.getElementById(tileID);
+        let squareEl = document.getElementById(squareID);
 
-        this.elements.board.addEventListener('dragstart', handle.onDragStart);
-        this.elements.board.addEventListener('dragover', handle.onDragOver);
-        this.elements.board.addEventListener('dragleave', handle.onDragLeave);
-        this.elements.board.addEventListener('drop', handle.onDrop);
+        squareEl.append(tileEl);
+        tileEl.classList.remove('dragging')
+        this.removeFocusSquare(squareEl.id);
+    }
 
-        // button listners
-        this.elements.buttons.forEach(button => {
-            button.addEventListener('click', handle.onButtonClick);
-        })
-    },
+    moveTileToRack(playerID) {
+        const currentTile = document.querySelector('.dragging');
+        this.racks[playerID].append(currentTile);
+        currentTile.classList.remove('dragging');
+    }
 
-    focusSquare(element) {
-        element.classList.add('pop-out');
-    },
+    recallTileToRack(playerID, tileID) {
+        const tile = document.getElementById(tileID);
+        this.racks[playerID].append(tile);
+    }
 
-    removeFocusSquare(element) {
-        element.classList.remove('pop-out');
-    },
-
-    moveTileToBoard(elementID, boardID) {
-        let tileElement = document.getElementById(elementID);
-        let squareElement = document.getElementById(boardID);
-        
-        if (squareElement.childNodes.length < 2) {
-            squareElement.append(tileElement);
-            this.removeFocusSquare(tileElement.parentNode);
-        }
-    },
-
-    moveTileToRack(elementID, rackSlot) {
-        let tileElement = document.getElementById(elementID);       
-        
-        // Allow the drop area to only be a slot
-        while (!rackSlot.classList.contains('player-rack__slot')) {
-            rackSlot = rackSlot.parentNode;
-        }
-        
-        // Slot is empty
-        if (!rackSlot.hasChildNodes()) {
-            rackSlot.append(tileElement);
-        } 
-
-        // Slot already contains a tile, so shift it to the next available empty slot
-        else {
-
-            // prev and next of slots on end of rack will default to current drop area
-            let tileToMove = rackSlot.firstChild;
-            let prevSlot = rackSlot.previousSibling || rackSlot;
-            let nextSlot = rackSlot.nextSibling || rackSlot;
-
-            if (tileElement === tileToMove) return;
-
-            // Previous slot is empty
-            if (!prevSlot.hasChildNodes()) {
-                prevSlot.append(tileToMove);
-                rackSlot.append(tileElement);
-            } 
-            // Next slot is empty
-            else if (!nextSlot.hasChildNodes()) {
-                nextSlot.append(tileToMove);
-                rackSlot.append(tileElement);
-            } 
-            // Need to swap tiles
-            else {
-                this.swapTiles(tileElement.parentNode, tileToMove.parentNode)
+    shiftTiles(e) {
+        let rect = e.target.getBoundingClientRect();
+        let offset = e.clientX - ((rect.left + rect.right) / 2);
+        let tileToMove = e.target.closest('.tile');
+        if (tileToMove) {
+            let tileToInsert = document.querySelector('.dragging');
+            if (offset < 0) {
+                tileToMove.parentNode.insertBefore(tileToInsert, tileToMove);
+            } else {
+                tileToMove.parentNode.insertBefore(tileToInsert, tileToMove.nextSibling);
             }
         }
-    },
+    }
 
-    showPlayerRack(id) {
-        let element = document.querySelector(`#rack-${id}`);
-        element.classList.remove('hidden');        
-    },
-
-    hidePlayerRack(id) {
-        let element = document.querySelector(`#rack-${id}`);
-        element.classList.add('hidden');        
-    },
+    addTileToRack(id, letter, points) {
+        let tileEl = this.createTileElement(id, letter, points);
+        let rackEl = document.querySelector('.player-rack:not(.hidden)')
+        rackEl.append(tileEl);
+    }
 
     freezeTile(squareID) {
         let square = document.getElementById(squareID);
         let tile = square.querySelector('.tile');
         tile.removeAttribute('draggable');
-    },
+    }
 
-      
-    /*********** Helpers ***********/
-    swapTiles(slotA, slotB) {
-        // console.log('slots', slotA, slotB);
-        let tileA = slotA.removeChild(slotA.firstChild);
-        let tileB = slotB.removeChild(slotB.firstChild);
-        slotA.append(tileB);
-        slotB.append(tileA);
-    },
-    
+    shuffleTiles() {
+        const playerRack = this.tileArea.querySelector('.player-rack:not(.hidden)');
+        let tileArray = Array.from(playerRack.querySelectorAll('.tile'));
+        let m = tileArray.length, temp, i;
+
+        while (m > 0) {
+            i = Math.floor(Math.random() * m);
+            m--;
+            temp = tileArray[m];
+            tileArray[m] = tileArray[i];
+            tileArray[i] = temp;
+        }
+        
+        tileArray.forEach(tile => playerRack.append(tile));
+    }
+
+    /**********************   Board updates  **************************/ 
+    focusSquare(id) {
+        document.getElementById(id).classList.add('pop-out');
+    }
+
+    removeFocusSquare(id) {
+        document.getElementById(id).classList.remove('pop-out');
+    }
+
+    /**********************   Create elements  *********************/ 
     createElement(tag, ...classNames) {
         const element = document.createElement(tag);
         classNames.forEach(name => element.classList.add(name));
-
         return element;
-    },
+    }
 
-    getElement(selector) {
-        return document.querySelector(selector);
-    },
+    createTileElement(id, letter, points) {
+        const tileEl = this.createElement('div', 'tile');
+        tileEl.id = id;
+        tileEl.setAttribute('data-letter', letter);
+        tileEl.setAttribute('data-points', points);
+        tileEl.setAttribute('draggable', 'true');
+        tileEl.innerHTML = `
+        <div class="tile__letter">${letter}</div>
+        <div class="tile__point-value">${points}</div>`;
+        
+        tileEl.addEventListener('dragstart', (e) => {
+            tileEl.classList.add('dragging');
+            this.tilePickedUpEvent.trigger(tileEl.id);
+        });
+        tileEl.addEventListener('dragend', () => tileEl.classList.remove('dragging'));
 
-    getAllElements(selector) {
-        return document.querySelectorAll(selector);
-    },   
-    
+        return tileEl;
+    }
+
+    createSquareElement(row, col, type) {
+        const squareEl = this.createElement('div', 'square');
+        squareEl.id = row * 15 + col;
+
+        // For special squares
+        if (type) {
+            squareEl.classList.add(`square--${type}`);
+            squareEl.setAttribute('data-type', type)
+            squareEl.innerHTML = type;
+        }
+
+        // Add event listeners
+        squareEl.addEventListener('dragover', (e) => {
+            e.preventDefault();
+
+            // only focus empty squares
+            if (squareEl.children.length === 0) {
+                this.focusSquare(squareEl.id)
+            }
+        });
+        squareEl.addEventListener('dragleave', () => this.removeFocusSquare(squareEl.id));
+        squareEl.addEventListener('drop', () => this.tileDropBoardEvent.trigger(squareEl.id));
+
+        return squareEl;
+    }
 }
