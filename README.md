@@ -10,7 +10,7 @@ Scoring is based on each tiles' point value as well as where it was placed on th
 
 The game ends when any player runs out of tiles. The point value of all remaining unused tiles is added up and awarded to the player who ended the game. The winner is the player who has the highest total point value.<br>
 
-[Live Demo]()
+[Live Demo](https://pages.git.generalassemb.ly/jontoye/project-scrabble-game/)
 
 ## Screenshots
 <img src="https://i.imgur.com/S0dDHyA.png">

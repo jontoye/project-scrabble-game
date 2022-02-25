@@ -2,6 +2,7 @@ import { Game } from "./Game.js";
 import { View } from "./View.js";
 import * as config from "./gameConfig.js";
 
+
 export class Controller {
     constructor() {
         this.game = new Game(config);
