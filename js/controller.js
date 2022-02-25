@@ -420,7 +420,7 @@ export class Controller {
 
         this.view.hideTileRack();
         this.view.setActivePlayer(this.game.players.indexOf(winner));
-        this.view.showNotification(`${winner.name.toUpperCase()} wins!`);
+        setTimeout(this.view.showNotification(`${winner.name.toUpperCase()} wins!`), 3000);
     }
 
 }
