@@ -1,5 +1,5 @@
-import { Game } from "./Game.js";
-import { View } from "./View.js";
+import { Game } from "./game.js";
+import { View } from "./view.js";
 import * as config from "./gameConfig.js";
 
 
