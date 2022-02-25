@@ -399,7 +399,6 @@ export class Controller {
     }
 
     endGame(endPlayer) {
-        console.log('GAME OVER')
 
         let playersLeft = this.game.players.filter(player => player.isPlaying);
 

@@ -155,6 +155,7 @@ export class View {
     }
 
     recallTileToRack(playerID, tileID) {
+        this.whooshSound.play();
         const tile = document.getElementById(tileID);
         this.racks[playerID].append(tile);
     }
