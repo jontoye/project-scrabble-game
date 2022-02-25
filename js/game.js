@@ -52,8 +52,16 @@ export class Game {
         return this.activeTile;
     }
 
+    // set whosTurn to next active player
     nextPlayer() {
         this.whosTurn = (this.whosTurn + 1) % this.players.length; 
+        if (!this.getCurrentPlayer().isPlaying) {
+            this.nextPlayer();
+        }
+    }
+
+    forfeitPlayer(id) {
+        this.players[id].isPlaying = false;
     }
 
     getCurrentPlayer() {
@@ -74,7 +82,8 @@ class Player {
         this.score = 0;
         this.tilesOnRack = [];
         this.tilesOnBoard = [];
-        this.bestWord = { word: '', points: '' }
+        this.bestWord = { word: '', points: '' };
+        this.isPlaying = true;
     }
 
     addNewTile(tileObj) {
@@ -246,6 +255,7 @@ class LetterBag {
             let newTile = this.tiles.splice(randomIndex, 1)[0];
             return newTile;        
         }
+        return false;
         console.info('Letter bag is empty')
     }
 }

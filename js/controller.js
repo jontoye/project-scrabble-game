@@ -7,42 +7,43 @@ export class Controller {
         this.game = new Game(config);
         this.view = new View();
 
-        // Tile Events
+        // Add event handlers
+        this.view.startGameEvent.addHandler((numPlayers, playerData) => this.onStartGameClick(numPlayers, playerData));
+
         this.view.tilePickedUpEvent.addHandler(tileID => this.onTilePickUp(tileID));
         this.view.tileDropBoardEvent.addHandler(boardID => this.onTileDropSquare(boardID))
         this.view.tileDropRackEvent.addHandler(() => this.onTileDropRack());
-        this.view.tileHoverEvent.addHandler( e => this.onTileOverRack(e));
-
-        // Button Events
-        this.view.wordPlayedEvent.addHandler(() => this.onWordPlayed());
-
-        // Recall tiles
         this.view.tileRecallEvent.addHandler(() => this.onTileRecall());
+        this.view.tileExchangeEvent.addHandler(() => this.onTileExchange());
 
-        // Pass turn
+        this.view.wordPlayedEvent.addHandler(() => this.onWordPlayed());
         this.view.passTurnEvent.addHandler(() => this.onPassTurn());
+        this.view.forfeitEvent.addHandler(() => this.onForfeit());
     }
 
     init() {
-        // simulate adding players
-        this.game.addPlayer('Player 1');
-        this.game.addPlayer('Player 2');
-        this.game.addPlayer('Player 3');
-        this.game.addPlayer('Player 4');
-
         // render page
         this.view.renderBoard(this.game.board.squares);
+    }
+
+    // Handlers
+    onStartGameClick(numPlayers, playerData) {
+
+        // add players to game data
+        playerData.forEach(player => this.game.addPlayer(player.name));
+
+        // render player racks
         this.game.players.forEach((player, id) => {
             this.view.renderRack(player.tilesOnRack)
         });
 
         // start game
-        this.game.start();
-        this.startNewTurn();
+        this.game.start()
+        this.view.setActivePlayer(this.game.whosTurn);
+        this.view.updateTileCount(this.game.letterBag.tiles.length);
+        this.view.renderPlayerCards(playerData);
+        this.view.showGameWindow();
     }
-
-
-    // Handlers
 
     onTilePickUp(tileID) {
         const player = this.game.getCurrentPlayer();
@@ -50,10 +51,6 @@ export class Controller {
         const tile = tiles.find(tile => tile.id === tileID);
 
         this.game.setActiveTile(tile);
-    }
-
-    onTileOverRack(e) {
-
     }
 
     onTileDropRack() {
@@ -100,7 +97,6 @@ export class Controller {
                 // clear previous board data first
                 board[prevLoc].currentTile = null;
                 this.game.board.removePlayedSquare(prevLoc);
-                // tile.location = Number(boardID);
             }
             
             // update tile and board data
@@ -117,7 +113,6 @@ export class Controller {
     }
 
     onWordPlayed() {
-
         const currentPlayer = this.game.getCurrentPlayer();
         const playedSquares = this.game.board.currentPlayedSquares;
         const wordCache = {};   // for storing valid words and their point score
@@ -131,6 +126,10 @@ export class Controller {
         connectedToTiles = playedSquares.filter(id => this.game.board.currentAdjacentSquares.includes(id)).length > 0;
         if (!connectedToTiles) {
             console.log('You must connect your tiles to the ones on the board!');
+
+            // display temporary notification
+            this.view.showNotification(`You must connect your tiles to the ones on the board!`);
+            setTimeout(() => this.view.hideNotification(), 2500);
             return;
         }
 
@@ -181,6 +180,10 @@ export class Controller {
         // Invalid tile placement
         else {
             console.log('Invalid tile placement');
+
+            // display temporary notification
+            this.view.showNotification(`Invalid tile placement`);
+            setTimeout(() => this.view.hideNotification(), 2000);
             return;
         }
 
@@ -192,10 +195,16 @@ export class Controller {
 
                 if (this.isValidWord(wordObj)) {
                     let currentWordPoints = this.scoreWord(wordObj);
+                    if (playedSquares.length === 7) currentWordPoints += 50;        // 7 tile bonus
                     wordCache[currentWord] = currentWordPoints;
                 } else { 
-                    console.log(`${currentWord} is not a word`);
+                    console.log(`${currentWord.toUpperCase()} is not a word`);
+
                     validPlay = false; 
+
+                    // display temporary notification
+                    this.view.showNotification(`${currentWord.toUpperCase()} is not a word`);
+                    setTimeout(() => this.view.hideNotification(), 2000);
                 }
             })
         } else { validPlay = false; }
@@ -225,7 +234,7 @@ export class Controller {
         const player = this.game.getCurrentPlayer();
 
         this.game.board.currentPlayedSquares.forEach(boardID => {
-            let tileToRecall = player.tilesOnBoard.find(tile => tile.location = boardID);
+            let tileToRecall = player.tilesOnBoard.find(tile => tile.location === boardID);
             
             // move tile object
             player.tilesOnRack.push(player.tilesOnBoard.splice(player.tilesOnBoard.findIndex(t => t === tileToRecall), 1)[0]);
@@ -242,22 +251,56 @@ export class Controller {
         this.game.board.currentPlayedSquares = [];
     }
 
-    onExchangeTiles() {
-        this.view.exchangeTiles(this.game.whosTurn);
+    onTileExchange() {
+        let player = this.game.getCurrentPlayer();
+
+        // recall any tiles on the board first
+        this.view.tileRecallEvent.trigger();
+
+        // pop tiles off into letterbag
+        while (player.tilesOnRack.length > 0) {
+            let tile = player.tilesOnRack.pop()
+            tile.location = null;   // clear location property
+            this.game.letterBag.tiles.push(tile);
+        }
+
+        this.view.clearTiles();
+        
+        // get new tiles
+        this.refillRack();
+
+          // end turn
+        this.view.showNotification(`${player.name} exchanged their tiles`);
+        setTimeout(() => this.view.hideNotification(), 1500);
+        this.view.passTurnEvent.trigger();
     }
 
     onPassTurn() {
+        // recall any tiles on the board first
         this.view.tileRecallEvent.trigger();
+        this.view.showNotification(`${this.game.getCurrentPlayer().name} passed`);
+        setTimeout(() => this.view.hideNotification(), 1500);
         this.game.nextPlayer();
         this.view.setActivePlayer(this.game.whosTurn);
     }
 
     onForfeit() {
+        this.view.tileRecallEvent.trigger();
+        this.view.showNotification(`${this.game.getCurrentPlayer().name} forfeits!`);
+        setTimeout(() => this.view.hideNotification(), 1500);
+        this.view.deactivatePlayer(this.game.whosTurn);
+        this.game.forfeitPlayer(this.game.whosTurn);
 
-    }
 
-    startNewTurn() {
-        this.view.setActivePlayer(this.game.whosTurn);
+        let playersLeft = this.game.players.filter(player => player.isPlaying).length;
+
+        if (playersLeft === 1) {
+            this.endGame(playersLeft[0]);
+        } else {
+            this.switchPlayer();
+        }
+
+
     }
 
     isValidWord(wordObj) {
@@ -293,16 +336,20 @@ export class Controller {
         return points;
     }
 
-    refillRack(playerID) {
-        let tilesNeeded = 7 - this.game.players[playerID].tilesOnRack.length;
+    refillRack() {
+        let player = this.game.getCurrentPlayer();
+        let tilesNeeded = 7 - player.tilesOnRack.length;
         
         for (let i = 0; i < tilesNeeded; i++) {
-            let tileObj = this.game.letterBag.getRandomTile();
-            this.game.players[playerID].addNewTile(tileObj)
-
-            const {id, letter, points} = tileObj;
-            this.view.addTileToRack(id, letter, points);
+            let tileObj = this.game.letterBag.getRandomTile();      // returns false if no more letters in bag
+            if (tileObj) {
+                player.addNewTile(tileObj)
+                const {id, letter, points} = tileObj;
+                this.view.addTileToRack(id, letter, points);
+            }
         }
+
+        this.view.updateTileCount(this.game.letterBag.tiles.length);
     }
 
     switchPlayer() {
@@ -313,16 +360,67 @@ export class Controller {
     endTurn() {
         // lock tiles in place
         this.game.board.currentPlayedSquares.forEach(id => this.view.freezeTile(id));
-        this.view.renderPlayerStats(this.game.whosTurn,
+        this.view.updatePlayerStats(this.game.whosTurn,
                                     this.game.getCurrentPlayer().score,
                                     this.game.getCurrentPlayer().bestWord);
 
+        // update board data
         this.game.board.updateAdjacentSquares();
         this.game.board.currentPlayedSquares = [];
 
-        // refill player rack and switch players
-        this.refillRack(this.game.whosTurn);
-        this.switchPlayer();
+        // refill player rack 
+        this.refillRack();
+
+        // check for end of game
+        if (this.game.getCurrentPlayer().tilesOnRack.length === 0) {
+            this.endGame(this.game.getCurrentPlayer());
+        } else {
+            this.switchPlayer();
+        }
     }
-    
+
+    determineWinner() {
+        // What if tie?
+        let winner = this.game.players.reduce((prev, cur) => {
+            if (cur.isPlaying) {
+                return cur.score > prev.score ? cur : prev;
+            }
+        });
+
+        return winner;
+    }
+
+    endGame(endPlayer) {
+        console.log('GAME OVER')
+
+        let playersLeft = this.game.players.filter(player => player.isPlaying);
+
+        this.game.playing = false;
+        this.view.disableButtons();
+        let winner;
+
+        if (playersLeft.length === 1) {
+            winner = playersLeft[0];
+        } else {
+            // Count bonus points from other players tiles
+            let bonusPoints = 0;
+            this.game.players.forEach(player => {
+                // player.isPlaying = false;
+                player.tilesOnRack.forEach(tile => bonusPoints += tile.points);
+            });
+            console.log(`${endPlayer.name} gets ${bonusPoints} bonus points!`);
+
+            // Add bonus points to player who ended game
+            endPlayer.score += bonusPoints;
+            this.view.updatePlayerStats(this.game.whosTurn, endPlayer.score, endPlayer.bestWord);        
+
+            // Determine winner
+            winner = this.determineWinner();
+        }
+
+        this.view.hideTileRack();
+        this.view.setActivePlayer(this.game.players.indexOf(winner));
+        this.view.showNotification(`${winner.name.toUpperCase()} wins!`);
+    }
+
 }
