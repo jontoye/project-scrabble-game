@@ -20,10 +20,10 @@ export class Controller {
         this.view.forfeitEvent.addHandler(() => this.onForfeit());
 
         // Audio
-        this.tileDropSound = new Audio('../audio/drop-tile.wav');
-        this.tileShuffleSound = new Audio('../audio/tile-shuffle.wav');
-        this.pointsScoredSound = new Audio('../audio/points-scored.wav');
-        this.winnerSound = new Audio('../audio/winner.wav');
+        this.tileDropSound = new Audio('./audio/drop-tile.wav');
+        this.tileShuffleSound = new Audio('./audio/tile-shuffle.wav');
+        this.pointsScoredSound = new Audio('./audio/points-scored.wav');
+        this.winnerSound = new Audio('./audio/winner.wav');
     }
 
     init() {
@@ -132,7 +132,6 @@ export class Controller {
         // check that at least 1 played tile is connected to an existing tile
         connectedToTiles = playedSquares.filter(id => this.game.board.currentAdjacentSquares.includes(id)).length > 0;
         if (!connectedToTiles) {
-            console.log('You must connect your tiles to the ones on the board!');
 
             // display temporary notification
             this.view.showNotification(`You must connect your tiles to the ones on the board!`);
@@ -186,7 +185,6 @@ export class Controller {
 
         // Invalid tile placement
         else {
-            console.log('Invalid tile placement');
 
             // display temporary notification
             this.view.showNotification(`Invalid tile placement`);
@@ -205,7 +203,6 @@ export class Controller {
                     if (playedSquares.length === 7) currentWordPoints += 50;        // 7 tile bonus
                     wordCache[currentWord] = currentWordPoints;
                 } else { 
-                    console.log(`${currentWord.toUpperCase()} is not a word`);
 
                     validPlay = false; 
 
@@ -236,16 +233,9 @@ export class Controller {
             }
             
             this.pointsScoredSound.play();
-            console.log('Total points for', currentPlayer.name, ': ', currentPlayer.score);
-
             this.endTurn();
         }
     }
-
-    // onShuffleTiles() {
-    //     this.view.shuffleTiles(this.game.whosTurn);
-    //     this.switchPlayer();
-    // }
 
     onTileRecall() {
         const player = this.game.getCurrentPlayer();

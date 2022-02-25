@@ -59,7 +59,7 @@ export class View {
         this.playerIcons.forEach(icon => icon.addEventListener('click', e => this.focusIcon(e)));
 
         // Audio
-        this.whooshSound = new Audio('../audio/whoosh.flac');
+        this.whooshSound = new Audio('./audio/whoosh.flac');
     }
 
     // Initialize board

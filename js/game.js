@@ -12,9 +12,9 @@ export class Game {
         this.playedWords = [];
         this.activeTile = { id: null, location: null};
 
-        this.addPlayerEvent = new Event();
-        this.updateSquareEvent = new Event();
-        this.updateRackEvent = new Event();
+        // this.addPlayerEvent = new Event();
+        // this.updateSquareEvent = new Event();
+        // this.updateRackEvent = new Event();
     }
 
     start() {
