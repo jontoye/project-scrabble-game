@@ -47,6 +47,14 @@ body {
     gap: 20px;
     height: 100vh;
 }
+
+.stats-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
  /**************************************************
 INTRO PAGE
  ***************************************************/
@@ -316,6 +324,42 @@ input,
     background-color: rgba(0, 0, 0, 0.657);
     transform: scale(0.9);
 }
+
+.wordListTitle {
+    padding: 10px 0;
+}
+
+.wordList {
+    display: flex;
+    justify-content: center;
+    gap: 70px;
+    height: 120px;
+    width: 200px;
+    list-style-type: none;
+
+    background-color: var(--color-square);
+    font-family: inherit;
+    font-size: 16px;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    text-transform: uppercase;
+    line-height: 1.6;
+    text-align: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.wordList .word {
+    list-style-type: none;
+}
+
+.wordList .score {
+    list-style-type: none;
+    text-align: right;
+}
+
 
 /**************************************************
 * BUTTONS

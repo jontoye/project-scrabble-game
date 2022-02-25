@@ -29,6 +29,9 @@ export class View {
         this.numPlayersInput = document.getElementById('numPlayers');
         this.playerInputsEl = document.querySelectorAll('.player-input');
         this.playerIcons = document.querySelectorAll('.player-icons img');
+        this.wordListEl = document.querySelector('.wordList');
+        this.wordListWordEl = document.querySelector('.wordList .word');
+        this.wordListScoreEl = document.querySelector('.wordList .score');
         
         // Tile Events
         this.tilePickedUpEvent = new Event();
@@ -251,6 +254,19 @@ export class View {
 
     hideNotification() {
         this.notificationEl.classList.add('hidden');
+    }
+
+    updateWordList(word, points) {
+        console.log(this.wordListEl)
+        let itemWord = this.createElement('li')
+        let itemScore = this.createElement('li')
+        itemWord.innerText = word;
+        itemScore.innerText = points;
+        this.wordListWordEl.append(itemWord);
+        this.wordListScoreEl.append(itemScore);
+        this.wordListEl.scrollTo(0, this.wordListEl.scrollHeight);
+
+        // this.wordListEl.value += `${word.padEnd(12, ' ')} ${points}\n`;
     }
 
     /**********************   Create elements  *********************/ 

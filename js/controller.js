@@ -219,9 +219,18 @@ export class Controller {
                 }
                 currentPlayer.score += wordCache[word];
                 console.log(`${currentPlayer.name} scored ${wordCache[word]} points for ${word}`);
-            }
+                this.view.showNotification(`${wordCache[word]} points for ${word}`);
+                setTimeout(() => this.view.hideNotification(), 1500);
 
+                // keep track of all played words
+                let obj = {}
+                obj[word] = wordCache[word];
+                this.view.updateWordList(word, wordCache[word]);
+                this.game.playedWords.push(obj);
+            }
+            
             console.log('Total points for', currentPlayer.name, ': ', currentPlayer.score);
+
             this.endTurn();
         }
     }
@@ -378,6 +387,8 @@ export class Controller {
         } else {
             this.switchPlayer();
         }
+
+        console.log(this.game.playedWords);
     }
 
     determineWinner() {
