@@ -57,6 +57,9 @@ export class View {
         this.startBtn.addEventListener('click', () => this.collectPlayerData());
         this.numPlayersInput.addEventListener('input', e => this.renderPlayerInputElements(Number(e.target.value)));
         this.playerIcons.forEach(icon => icon.addEventListener('click', e => this.focusIcon(e)));
+
+        // Audio
+        this.whooshSound = new Audio('../audio/whoosh.flac');
     }
 
     // Initialize board
@@ -191,6 +194,7 @@ export class View {
     }
 
     shuffleTiles() {
+        this.whooshSound.play();
         const playerRack = this.tileArea.querySelector('.player-rack:not(.hidden)');
         let tileArray = Array.from(playerRack.querySelectorAll('.tile'));
         let m = tileArray.length, temp, i;
@@ -257,7 +261,6 @@ export class View {
     }
 
     updateWordList(word, points) {
-        console.log(this.wordListEl)
         let itemWord = this.createElement('li')
         let itemScore = this.createElement('li')
         itemWord.innerText = word;

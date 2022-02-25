@@ -10,16 +10,20 @@ export class Controller {
 
         // Add event handlers
         this.view.startGameEvent.addHandler((numPlayers, playerData) => this.onStartGameClick(numPlayers, playerData));
-
         this.view.tilePickedUpEvent.addHandler(tileID => this.onTilePickUp(tileID));
         this.view.tileDropBoardEvent.addHandler(boardID => this.onTileDropSquare(boardID))
         this.view.tileDropRackEvent.addHandler(() => this.onTileDropRack());
         this.view.tileRecallEvent.addHandler(() => this.onTileRecall());
         this.view.tileExchangeEvent.addHandler(() => this.onTileExchange());
-
         this.view.wordPlayedEvent.addHandler(() => this.onWordPlayed());
         this.view.passTurnEvent.addHandler(() => this.onPassTurn());
         this.view.forfeitEvent.addHandler(() => this.onForfeit());
+
+        // Audio
+        this.tileDropSound = new Audio('../audio/drop-tile.wav');
+        this.tileShuffleSound = new Audio('../audio/tile-shuffle.wav');
+        this.pointsScoredSound = new Audio('../audio/points-scored.wav');
+        this.winnerSound = new Audio('../audio/winner.wav');
     }
 
     init() {
@@ -44,6 +48,7 @@ export class Controller {
         this.view.updateTileCount(this.game.letterBag.tiles.length);
         this.view.renderPlayerCards(playerData);
         this.view.showGameWindow();
+        this.tileShuffleSound.play();
     }
 
     onTilePickUp(tileID) {
@@ -84,6 +89,7 @@ export class Controller {
     }
 
     onTileDropSquare(boardID) {
+        this.tileDropSound.play();
         const tile = this.game.getActiveTile();
         const prevLoc = tile.location;
         const player = this.game.getCurrentPlayer();
@@ -229,16 +235,17 @@ export class Controller {
                 this.game.playedWords.push(obj);
             }
             
+            this.pointsScoredSound.play();
             console.log('Total points for', currentPlayer.name, ': ', currentPlayer.score);
 
             this.endTurn();
         }
     }
 
-    onShuffleTiles() {
-        this.view.shuffleTiles(this.game.whosTurn);
-        this.switchPlayer();
-    }
+    // onShuffleTiles() {
+    //     this.view.shuffleTiles(this.game.whosTurn);
+    //     this.switchPlayer();
+    // }
 
     onTileRecall() {
         const player = this.game.getCurrentPlayer();
@@ -262,6 +269,7 @@ export class Controller {
     }
 
     onTileExchange() {
+        this.tileShuffleSound.play();
         let player = this.game.getCurrentPlayer();
 
         // recall any tiles on the board first
@@ -387,8 +395,6 @@ export class Controller {
         } else {
             this.switchPlayer();
         }
-
-        console.log(this.game.playedWords);
     }
 
     determineWinner() {
@@ -429,7 +435,8 @@ export class Controller {
             // Determine winner
             winner = this.determineWinner();
         }
-
+        
+        this.winnerSound.play();
         this.view.hideTileRack();
         this.view.setActivePlayer(this.game.players.indexOf(winner));
         setTimeout(this.view.showNotification(`${winner.name.toUpperCase()} wins!`), 3000);
