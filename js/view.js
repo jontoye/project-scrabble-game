@@ -252,13 +252,18 @@ export class View {
         document.querySelectorAll('button').forEach(btn => btn.setAttribute('disabled', ''));
     }
 
-    showNotification(msg) {
-        this.notificationEl.innerText = msg;
-        this.notificationEl.classList.remove('hidden');
-    }
+    showNotification(msg, duration) {
+        const msgEl = this.createElement('div', 'notification__item');
+        msgEl.innerText = msg;
+        // msgEl.innerText = msg;
+        // this.notificationEl.classList.remove('hidden');
 
-    hideNotification() {
-        this.notificationEl.classList.add('hidden');
+        this.notificationEl.append(msgEl);
+        this.notificationEl.classList.remove('hidden');
+        setTimeout(() => {
+            msgEl.remove()
+            this.notificationEl.classList.add('hidden');
+        }, duration);
     }
 
     updateWordList(word, points) {
@@ -266,11 +271,9 @@ export class View {
         let itemScore = this.createElement('li')
         itemWord.innerText = word;
         itemScore.innerText = points;
-        this.wordListWordEl.append(itemWord);
-        this.wordListScoreEl.append(itemScore);
-        this.wordListEl.scrollTo(0, this.wordListEl.scrollHeight);
-
-        // this.wordListEl.value += `${word.padEnd(12, ' ')} ${points}\n`;
+        this.wordListWordEl.prepend(itemWord);
+        this.wordListScoreEl.prepend(itemScore);
+        // this.wordListEl.scrollTo(0, this.wordListEl.scrollHeight);
     }
 
     /**********************   Create elements  *********************/ 
