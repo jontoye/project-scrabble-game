@@ -11,10 +11,6 @@ export class Game {
         this.validWords = config.VALID_WORDS;
         this.playedWords = [];
         this.activeTile = { id: null, location: null};
-
-        // this.addPlayerEvent = new Event();
-        // this.updateSquareEvent = new Event();
-        // this.updateRackEvent = new Event();
     }
 
     start() {
@@ -146,7 +142,7 @@ class Board {
             }
 
             let toRight = (boardID + 1) % 15 === 0 ? boardID : boardID + 1;
-            let toLeft = (boardID - 1) % 15 === 14 ? boardID : boardID -1;
+            let toLeft = (boardID - 1) % 15 === 14  || (boardID - 1) < 0 ? boardID : boardID -1;
             let toTop = (boardID - 15) < 0 ? boardID : boardID - 15;
             let toBot = (boardID + 15) > 224 ? boardID : boardID + 15;
 
