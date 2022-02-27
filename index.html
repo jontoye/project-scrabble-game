@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <div class="container intro-page">
+    <div class="intro-page">
 
         <div class="title">
             <div class="tile">S</div>
@@ -26,7 +26,6 @@
         </div>
 
         <div class="game-setup">
-
             <div class="player-num">
                 <label for="numPlayers">How many players?</label>
                 <select id="numPlayers">
@@ -34,6 +33,10 @@
                     <option value="3">3</option>
                     <option value="4">4</option>
                 </select>
+            </div>
+
+            <div class="instructions">
+                For each player, write your name and select your avatar below
             </div>
 
             <div class="player-names">
@@ -74,16 +77,14 @@
         </div>
     </div>
 
-    <div class="container main-page hidden">
-                
+    <div class="main-page hidden">
+
         <div class="game-area">
             <div class="board">
                 <div class="notification hidden"></div>
             </div>
-
             <div class="controls">
                 <div class="tile-area"></div>
-
                 <div id="btnGroup" class="buttons">
                     <button id="forfeitBtn">Forfeit</button>
                     <button id="passBtn">Pass</button>
@@ -96,14 +97,22 @@
                     <button id="playBtn">Play</button>
                     <button disabled id="tileCount">Tiles Left: 54</button>
                 </div>
-
             </div>
-
         </div>
 
         <div class="stats-area">
+            <div class="title">
+                <div class="tile">S</div>
+                <div class="tile">C</div>
+                <div class="tile">R</div>
+                <div class="tile">A</div>
+                <div class="tile">B</div>
+                <div class="tile">B</div>
+                <div class="tile">L</div>
+                <div class="tile">E</div>
+            </div>
 
-            <div class="player-card hidden">
+            <div id="p1" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -115,7 +124,7 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <div class="player-card hidden">
+            <div id="p2" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -127,7 +136,7 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <div class="player-card hidden">
+            <div id="p3" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -139,7 +148,7 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <div class="player-card hidden">
+            <div id="p4" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -151,13 +160,21 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <p class="wordListTitle">Words Played</p>
-            <div class="wordList">
-                <ul class="word"></ul>
-                <ul class="score"></ul>
+            <div class="wordTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>Played By</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody class="wordList">
+                    </tbody>
+                </table>
             </div>
-
         </div>
+
     </div>
 
     <script src="app.js" type="module"></script>

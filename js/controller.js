@@ -231,13 +231,13 @@ export class Controller {
                 }
                 currentPlayer.score += wordCache[word];
                 console.log(`${currentPlayer.name} scored ${wordCache[word]} points for ${word}`);
-                this.view.showNotification(`${wordCache[word]} points for ${word}`, 1500);
                 if (allTilesUsed) this.view.showNotification('+50 point bonus!', 2000)
+                this.view.showNotification(`${wordCache[word]} points for ${word}`, 2000);
 
                 // keep track of all played words
                 let obj = {}
                 obj[word] = wordCache[word];
-                this.view.updateWordList(word, wordCache[word]);
+                this.view.updateWordList(word, currentPlayer.name, wordCache[word]);
                 this.game.playedWords.push(obj);
             }
             
@@ -287,14 +287,14 @@ export class Controller {
         this.refillRack();
 
           // end turn
-        this.view.showNotification(`${player.name} exchanged their tiles`, 1500);
+        this.view.showNotification(`${player.name} exchanged their tiles`, 2000);
         this.view.passTurnEvent.trigger();
     }
 
     onPassTurn() {
         // recall any tiles on the board first
         this.view.tileRecallEvent.trigger();
-        this.view.showNotification(`${this.game.getCurrentPlayer().name} passed`, 1500);
+        this.view.showNotification(`${this.game.getCurrentPlayer().name} passed`, 2000);
         this.game.nextPlayer();
         this.view.setActivePlayer(this.game.whosTurn);
     }
