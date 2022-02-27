@@ -156,7 +156,8 @@ export class Controller {
 
         // check if tiles were placed vertically
         for (let i = playedSquares[0]; i < playedSquares[playedSquares.length - 1]; i += 15) {
-            if (!this.game.board.squares[i + 15].currentTile) {
+            // prevent checking non-existent squares in last row
+            if (i + 15 > 224 || !this.game.board.squares[i + 15].currentTile) {
                 isVertical = false;
                 break;
             }
