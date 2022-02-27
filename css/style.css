@@ -21,7 +21,7 @@
     --color-tl: #45ce5d;
     --color-tw: #fa732b;
     --color-tile-text: #000;
-    --color-square-text: #FFF;
+    --color-square-text: #fff;
 
     --size-square: 40px;
     --size-square-gap: 2px;
@@ -29,7 +29,6 @@
 
     --font-stack: Roboto, sans-serif;
     --font-size: calc(0.4 * var(--size-square));
-
 }
 
 html {
@@ -55,7 +54,6 @@ body {
     padding: 25px;
 }
 
-
 .game-area {
     grid-area: game;
 }
@@ -70,20 +68,16 @@ body {
     grid-template-rows: 120px 160px 160px 150px;
     grid-template-columns: repeat(2, 325px);
     gap: 25px;
-    /* display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; */
-    /* height: 100%; */
 }
 
 .stats-area > .title {
     grid-area: title;
     justify-content: center;
 }
- /**************************************************
+
+/**************************************************
 INTRO PAGE
- ***************************************************/
+***************************************************/
  .intro-page {
     flex-direction: column;
     align-items: center;
@@ -108,7 +102,7 @@ INTRO PAGE
     background-position: center;
     width: 700px;
     height: 500px;
-    padding-bottom: 40px;
+    padding: 20px 0;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     border-radius: 12px;
     display: flex;
@@ -125,8 +119,17 @@ INTRO PAGE
     gap: 20px;
 }
 
+.instructions {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
 .player-names {
-    flex: 2;
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .player-input {
@@ -316,7 +319,6 @@ input,
 }
 
 .player-card {
-    /* margin: 20px; */
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -366,6 +368,11 @@ input,
 .forfeit {
     background-color: rgba(0, 0, 0, 0.657);
     transform: scale(0.9);
+    opacity: 0.8;
+}
+
+.forfeit .player-card__score {
+    color: rgba(170, 170, 170, 0.212);
 }
 
  /**************************************************
@@ -378,7 +385,6 @@ input,
 ::-webkit-scrollbar-track {
     background: rgb(179, 177, 177);
     border-radius: 10px;
-    
 }
 
 ::-webkit-scrollbar-thumb {
@@ -386,39 +392,51 @@ input,
     border-radius: 10px;
 }
 
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(100, 100, 100);
+
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgb(68, 68, 68);
+    border-radius: 10px;
+}
 
 .wordTable {
     grid-area: words;
-    /* border: 1px solid black; */
     width: 65%;
-    height: 150px;
-    /* overflow-y: auto;
-    overflow-x: hidden; */
+    height: 200px;
+    margin-top: 40px;
     justify-self: center;
     border-radius: 7px;
     overflow-y: auto;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14) , 0px 3px 1px -2px rgba(0,0,0,0.12) , 0px 1px 5px 0px rgba(0,0,0,0.2);
+    background-color: rgba(0, 0, 0, 0.623);
+    color: #fff;
 }
-
 
 table {
     width: 100%;
-    /* border-collapse: collapse; */
+    border-collapse: collapse;
     position: relative;
     border-spacing: 10px 0;
     position: relative;
 }
 
 thead {
-    height: 50px;
+    height: 30px;
 }
 
 tr th {
-    background-color: var(--color-dw);
-    color: #fff;
-    padding: 8px 0;
-    border-radius: 10px;
-    /* height: 30px; */
-    /* border: solid 1px black; */
+    background-color: var(--color-square);
+    color: #000;
+    padding: 4px 0;
+}
+
+tr th:first-child {
+    text-align: left;
+    padding-left: 20px;
 }
 
 th {
@@ -426,72 +444,33 @@ th {
     top: 0px;
 }
 
+tr {
+    animation: slideIn 1s;
+}
+
 td {
-    padding: 8px 0;
-    border-radius: 10px;
-    /* border: solid 1px black; */
+    padding: 8px;
 }
 
 .wordList tr:nth-child(even) {
-    background-color: var(--color-square);
+    background-color: var(--color-tile);
+    color: #000;
 }
 
 .wordList .word {
-    text-align: left;
     text-transform: uppercase;
+    padding-left: 20px;
+    width: 40%;
 }
 
 .wordList .player {
     text-align: center;
+    width: 30%;
 }
 
 .wordList .score {
-    text-align: right;
-    padding-right: 10px;
+    text-align: center;
 }
-
-
-td {
-    /* border: 1px solid black; */
-}
-
-
-/* 
-.wordList {
-    grid-area: words;
-    display: flex;
-    justify-content: center;
-    gap: 70px;
-    list-style-type: none;
-    width: 60%;
-    justify-self: center;
-
-    background-color: var(--color-square);
-    font-family: inherit;
-    font-size: 16px;
-    padding: 20px;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14) , 0px 3px 1px -2px rgba(0,0,0,0.12) , 0px 1px 5px 0px rgba(0,0,0,0.2) ;
-    text-transform: uppercase;
-    line-height: 1.6;
-    text-align: left;
-    overflow-y: scroll;
-    overflow-x: hidden;
-} */
-/* 
-.wordList .word {
-    list-style-type: none;
-    width: 50%;
-}
-
-
-.wordList .score {
-    list-style-type: none;
-    text-align: right;
-    width: 50%;
-} */
-
 
 /**************************************************
 * BUTTONS
@@ -506,17 +485,21 @@ button {
     background-color: var(--color-dw);
     border: none;
     margin: 3px 0;
-    color: #FFF;
+    color: #fff;
     transition: all 0.3s ease-in-out;
 }
 
-button:hover:not(.tileCount) {
+button:hover:not(#tileCount) {
     opacity: 0.8;
 }
 
 #playBtn {
     background-color: var(--color-tl);
     height: 65%;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
 }
 
 #passBtn {
@@ -530,8 +513,10 @@ button:hover:not(.tileCount) {
 #tileCount {
     background-color: var(--color-tile);
     padding: 7px;
-    font-size: 12px;
+    font-size: 14px;
     color: #000;
+    cursor:default;
+    font-weight: 700;
 }
 
 /**************************************************
@@ -558,7 +543,7 @@ button:hover:not(.tileCount) {
     align-items: center;
     text-align: center;
     background-color: #000;
-    color: #FFF;
+    color: #fff;
     border-radius: 10px;
     padding: 15px 40px;
     letter-spacing: 2px;
@@ -566,7 +551,6 @@ button:hover:not(.tileCount) {
     text-transform: uppercase;
     z-index: 100;
 }
-
 
 /**************************************************
 * ANIMATIONS
@@ -580,6 +564,18 @@ button:hover:not(.tileCount) {
         border: 2px solid var(--color-tile-text);
         transform: scale(1.5);
         z-index: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    } 
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
