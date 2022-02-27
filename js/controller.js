@@ -147,18 +147,16 @@ export class Controller {
         }
 
         // check if tiles were placed horizontally
-        for (let i = 0; i < playedSquares.length - 1; i++) {
-            if (this.game.board.squares[playedSquares[i]].row !== this.game.board.squares[playedSquares[i + 1]].row ||   // tiles are not in came row OR
-                !this.game.board.squares[playedSquares[i] + 1].currentTile) {                               // adjacent square is empty
+        for (let i = playedSquares[0]; i < playedSquares[playedSquares.length - 1]; i++) {
+            if (!this.game.board.squares[i + 1].currentTile) {
                 isHorizontal = false;
                 break;
             }
         }
 
         // check if tiles were placed vertically
-        for (let i = 0; i < playedSquares.length - 1; i++) {
-            if (this.game.board.squares[playedSquares[i]].col !== this.game.board.squares[playedSquares[i + 1]].col ||   // tiles are not in same col OR
-                !this.game.board.squares[playedSquares[i] + 15].currentTile) {                              // adjacent square is empty
+        for (let i = playedSquares[0]; i < playedSquares[playedSquares.length - 1]; i += 15) {
+            if (!this.game.board.squares[i + 15].currentTile) {
                 isVertical = false;
                 break;
             }

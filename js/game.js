@@ -254,4 +254,11 @@ class LetterBag {
         return false;
         console.info('Letter bag is empty')
     }
+
+    // for testing 
+    getSpecifiedTile(letter) {
+        const i = this.tiles.findIndex(tile => tile.letter = letter);
+        const tile = this.tiles.splice(i, 1)[0];
+        return tile;
+    }
 }
