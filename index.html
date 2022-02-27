@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <div class="container intro-page">
+    <div class="intro-page">
 
         <div class="title">
             <div class="tile">S</div>
@@ -74,7 +74,9 @@
         </div>
     </div>
 
-    <div class="container main-page hidden">
+    <div class="main-page hidden">
+
+
                 
         <div class="game-area">
             <div class="board">
@@ -103,7 +105,18 @@
 
         <div class="stats-area">
 
-            <div class="player-card hidden">
+            <div class="title">
+                <div class="tile">S</div>
+                <div class="tile">C</div>
+                <div class="tile">R</div>
+                <div class="tile">A</div>
+                <div class="tile">B</div>
+                <div class="tile">B</div>
+                <div class="tile">L</div>
+                <div class="tile">E</div>
+            </div>
+
+            <div id="p1" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -115,7 +128,7 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <div class="player-card hidden">
+            <div id="p2" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -127,7 +140,7 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <div class="player-card hidden">
+            <div id="p3" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -139,7 +152,7 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <div class="player-card hidden">
+            <div id="p4" class="player-card hidden">
                 <div class="player-card__img">
                     <img draggable="false" src="img/player-img-1.png" alt="">
                 </div>
@@ -151,10 +164,61 @@
                 <div class="player-card__score">0</div>
             </div>
 
-            <p class="wordListTitle">Words Played</p>
-            <div class="wordList">
+
+            <!-- <div class="wordList">
                 <ul class="word"></ul>
                 <ul class="score"></ul>
+            </div> -->
+
+            <div class="wordTable">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>Played By</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody class="wordList">
+                        <!-- <tr>
+                            <td class="word">WORD</td>
+                            <td class="player">PLAYER 1</td>
+                            <td class="score">23</td>
+                        </tr>
+                        <tr>
+                            <td class="word">WORD</td>
+                            <td class="player">PLAYER 1</td>
+                            <td class="score">23</td>
+                        </tr>
+                        <tr>
+                            <td class="word">WORD</td>
+                            <td class="player">PLAYER 1</td>
+                            <td class="score">23</td>
+                        </tr>
+                        <tr>
+                            <td class="word">WORD</td>
+                            <td class="player">PLAYER 1</td>
+                            <td class="score">23</td>
+                        </tr>
+                        <tr>
+                            <td class="word">WORD</td>
+                            <td class="player">PLAYER 1</td>
+                            <td class="score">23</td>
+                        </tr>
+                        <tr>
+                            <td class="word">WORD</td>
+                            <td class="player">PLAYER 1</td>
+                            <td class="score">23</td>
+                        </tr>
+                        <tr>
+                            <td class="word">WORD</td>
+                            <td class="player">PLAYER 1</td>
+                            <td class="score">23</td>
+                        </tr> -->
+        
+                    </tbody>
+                </table>
             </div>
 
         </div>

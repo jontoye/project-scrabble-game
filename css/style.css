@@ -23,8 +23,8 @@
     --color-tile-text: #000;
     --color-square-text: #FFF;
 
-    --size-square: 38px;
-    --size-square-gap: 4px;
+    --size-square: 40px;
+    --size-square-gap: 2px;
     --size-tile: 55px;
 
     --font-stack: Roboto, sans-serif;
@@ -41,19 +41,45 @@ body {
     overflow: hidden;
 }
 
-.container {
+.intro-page {
     display: flex;
     justify-content: center;
     gap: 20px;
     height: 100vh;
 }
 
+.main-page {
+    display: grid;
+    grid-template-areas: "game stats";
+    gap: 20px;
+    padding: 25px;
+}
+
+
+.game-area {
+    grid-area: game;
+}
+
 .stats-area {
-    display: flex;
+    grid-area: stats;
+    display: grid;
+    grid-template-areas: "title title"
+                         "player1 player2"
+                         "player3 player4"
+                         "words words";
+    grid-template-rows: 120px 160px 160px 150px;
+    grid-template-columns: repeat(2, 325px);
+    gap: 25px;
+    /* display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    height: 100%;
+    align-items: center; */
+    /* height: 100%; */
+}
+
+.stats-area > .title {
+    grid-area: title;
+    justify-content: center;
 }
  /**************************************************
 INTRO PAGE
@@ -187,8 +213,11 @@ input,
     grid-template-areas: "tiles btnMain"
                          "btnGroup btnMain";
     background-color: var(--color-square);
+    background-color: rgba(0, 0, 0, 0.623);
+    border-radius: 10px;
     padding: 15px;
     margin-top: 20px;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14) , 0px 3px 1px -2px rgba(0,0,0,0.12) , 0px 1px 5px 0px rgba(0,0,0,0.2) ;
 }
 
 #btnGroup {
@@ -207,7 +236,7 @@ input,
     flex-direction: column;
 }
 
- .tile-area {
+.tile-area {
     width: 100%;
     height: 60px;
     grid-area: tiles;
@@ -218,7 +247,6 @@ input,
     justify-content: space-around;
     align-items: center;
     gap: 5px;
-    width: 500px;
     height: 100%;
 }
 
@@ -271,8 +299,24 @@ input,
  /**************************************************
  * STATS AREA
  ***************************************************/
+ #p1 {
+     grid-area: player1;
+}
+
+ #p2 {
+    grid-area: player2;
+}
+
+#p3 {
+    grid-area: player3;
+}
+
+#p4 {
+    grid-area: player4;
+}
+
 .player-card {
-    margin: 20px;
+    /* margin: 20px; */
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -280,7 +324,6 @@ input,
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     border-radius: 8px;
     transition: all 0.3s ease-in-out;
-    width: 330px;
 }
 
 .player-card__img {
@@ -289,7 +332,7 @@ input,
 }
 
 .player-card__info {
-    flex: 2;
+    flex: 3;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -325,17 +368,103 @@ input,
     transform: scale(0.9);
 }
 
-.wordListTitle {
-    padding: 10px 0;
+ /**************************************************
+ * Word Table
+ ***************************************************/
+::-webkit-scrollbar {
+     width: 10px;
+} 
+
+::-webkit-scrollbar-track {
+    background: rgb(179, 177, 177);
+    border-radius: 10px;
+    
 }
 
+::-webkit-scrollbar-thumb {
+    background: rgb(136, 136, 136);
+    border-radius: 10px;
+}
+
+
+.wordTable {
+    grid-area: words;
+    /* border: 1px solid black; */
+    width: 65%;
+    height: 150px;
+    /* overflow-y: auto;
+    overflow-x: hidden; */
+    justify-self: center;
+    border-radius: 7px;
+    overflow-y: auto;
+}
+
+
+table {
+    width: 100%;
+    /* border-collapse: collapse; */
+    position: relative;
+    border-spacing: 10px 0;
+    position: relative;
+}
+
+thead {
+    height: 50px;
+}
+
+tr th {
+    background-color: var(--color-dw);
+    color: #fff;
+    padding: 8px 0;
+    border-radius: 10px;
+    /* height: 30px; */
+    /* border: solid 1px black; */
+}
+
+th {
+    position: sticky;
+    top: 0px;
+}
+
+td {
+    padding: 8px 0;
+    border-radius: 10px;
+    /* border: solid 1px black; */
+}
+
+.wordList tr:nth-child(even) {
+    background-color: var(--color-square);
+}
+
+.wordList .word {
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.wordList .player {
+    text-align: center;
+}
+
+.wordList .score {
+    text-align: right;
+    padding-right: 10px;
+}
+
+
+td {
+    /* border: 1px solid black; */
+}
+
+
+/* 
 .wordList {
+    grid-area: words;
     display: flex;
     justify-content: center;
     gap: 70px;
-    height: 120px;
-    width: 200px;
     list-style-type: none;
+    width: 60%;
+    justify-self: center;
 
     background-color: var(--color-square);
     font-family: inherit;
@@ -343,22 +472,25 @@ input,
     padding: 20px;
     border: none;
     border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14) , 0px 3px 1px -2px rgba(0,0,0,0.12) , 0px 1px 5px 0px rgba(0,0,0,0.2) ;
     text-transform: uppercase;
     line-height: 1.6;
     text-align: left;
     overflow-y: scroll;
     overflow-x: hidden;
-}
-
+} */
+/* 
 .wordList .word {
     list-style-type: none;
+    width: 50%;
 }
+
 
 .wordList .score {
     list-style-type: none;
     text-align: right;
-}
+    width: 50%;
+} */
 
 
 /**************************************************

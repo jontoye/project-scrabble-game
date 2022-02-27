@@ -30,8 +30,6 @@ export class View {
         this.playerInputsEl = document.querySelectorAll('.player-input');
         this.playerIcons = document.querySelectorAll('.player-icons img');
         this.wordListEl = document.querySelector('.wordList');
-        this.wordListWordEl = document.querySelector('.wordList .word');
-        this.wordListScoreEl = document.querySelector('.wordList .score');
         
         // Tile Events
         this.tilePickedUpEvent = new Event();
@@ -255,8 +253,6 @@ export class View {
     showNotification(msg, duration) {
         const msgEl = this.createElement('div', 'notification__item');
         msgEl.innerText = msg;
-        // msgEl.innerText = msg;
-        // this.notificationEl.classList.remove('hidden');
 
         this.notificationEl.append(msgEl);
         this.notificationEl.classList.remove('hidden');
@@ -266,14 +262,16 @@ export class View {
         }, duration);
     }
 
-    updateWordList(word, points) {
-        let itemWord = this.createElement('li')
-        let itemScore = this.createElement('li')
-        itemWord.innerText = word;
-        itemScore.innerText = points;
-        this.wordListWordEl.prepend(itemWord);
-        this.wordListScoreEl.prepend(itemScore);
-        // this.wordListEl.scrollTo(0, this.wordListEl.scrollHeight);
+    updateWordList(word, playedBy, points) {
+        let rowEl = this.createElement('tr');
+        rowEl.innerHTML = `
+        <tr>
+            <td class="word">${word}</td>
+            <td class="player">${playedBy}</td>
+            <td class="score">${points}</td>
+        </tr>`
+        this.wordListEl.prepend(rowEl)
+
     }
 
     /**********************   Create elements  *********************/ 
