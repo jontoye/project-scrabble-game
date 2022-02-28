@@ -20,7 +20,7 @@ export class View {
         this.passBtn = document.getElementById('passBtn');
         this.forfeitBtn = document.getElementById('forfeitBtn');
 
-        this.notificationEl = document.querySelector('.notification');
+        this.notificationEl = document.querySelector('.notification-overlay');
         this.tileCountEl = document.getElementById('tileCount');
 
         this.introPageEl = document.querySelector('.intro-page');
@@ -30,6 +30,8 @@ export class View {
         this.playerInputsEl = document.querySelectorAll('.player-input');
         this.playerIcons = document.querySelectorAll('.player-icons img');
         this.wordListEl = document.querySelector('.wordList');
+        this.wordListWordEl = document.querySelector('.wordList .word');
+        this.wordListScoreEl = document.querySelector('.wordList .score');
         
         // Tile Events
         this.tilePickedUpEvent = new Event();
@@ -235,7 +237,7 @@ export class View {
 
     deactivatePlayer(playerID) {
         this.clearTiles();
-        this.playerCards[playerID].classList.add('forfeit');
+        this.playerCards[playerID].classList.add('inactive');
     }
 
     focusSquare(id) {
@@ -250,16 +252,12 @@ export class View {
         document.querySelectorAll('button').forEach(btn => btn.setAttribute('disabled', ''));
     }
 
-    showNotification(msg, duration) {
-        const msgEl = this.createElement('div', 'notification__item');
+    showNotification(msg, type, duration) {
+        const msgEl = this.createElement('div', 'notification-item', type);
         msgEl.innerText = msg;
 
         this.notificationEl.append(msgEl);
-        this.notificationEl.classList.remove('hidden');
-        setTimeout(() => {
-            msgEl.remove()
-            this.notificationEl.classList.add('hidden');
-        }, duration);
+        setTimeout(() => { msgEl.remove() }, duration);
     }
 
     updateWordList(word, playedBy, points) {
@@ -271,7 +269,6 @@ export class View {
             <td class="score">${points}</td>
         </tr>`
         this.wordListEl.prepend(rowEl)
-
     }
 
     /**********************   Create elements  *********************/ 
