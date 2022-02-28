@@ -184,7 +184,7 @@ class Board {
         if (boardID > 14) {     // no need to go up if already at first row
             while (this.squares[boardID - 15].currentTile) {
                 boardID -= 15;
-                if (boardID < 0) { break; }     // reached 1st row
+                if (boardID < 15) { break; }     // reached 1st row
             }
         }
 
