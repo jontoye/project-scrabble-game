@@ -142,7 +142,7 @@ export class Controller {
                 errorMsg = `You must connect your tiles to the ones on the board!`;
             }
 
-            this.view.showNotification(errorMsg, 3000);
+            this.view.showNotification(errorMsg, 'error', 3000);
             return;
         }
 
@@ -192,7 +192,7 @@ export class Controller {
         else {
 
             // display temporary notification
-            this.view.showNotification(`Invalid tile placement`, 2000);
+            this.view.showNotification(`Invalid tile placement`, 'error', 2000);
             return;
         }
 
@@ -216,7 +216,7 @@ export class Controller {
                     validPlay = false; 
 
                     // display temporary notification
-                    this.view.showNotification(`${currentWord.toUpperCase()} is not a word`, 2000);
+                    this.view.showNotification(`${currentWord.toUpperCase()} is not a word`, 'error', 2000);
                 }
             })
         } else { validPlay = false; }
@@ -230,8 +230,8 @@ export class Controller {
                 }
                 currentPlayer.score += wordCache[word];
                 console.log(`${currentPlayer.name} scored ${wordCache[word]} points for ${word}`);
-                if (allTilesUsed) this.view.showNotification('+50 point bonus!', 2000)
-                this.view.showNotification(`${wordCache[word]} points for ${word}`, 2000);
+                if (allTilesUsed) this.view.showNotification('+50 point bonus!', 'info', 2000)
+                this.view.showNotification(`${wordCache[word]} points for ${word}`, 'info', 2000);
 
                 // keep track of all played words
                 let obj = {}
@@ -286,21 +286,21 @@ export class Controller {
         this.refillRack();
 
           // end turn
-        this.view.showNotification(`${player.name} exchanged their tiles`, 2000);
+        this.view.showNotification(`${player.name} exchanged their tiles`, 'warn', 2000);
         this.view.passTurnEvent.trigger();
     }
 
     onPassTurn() {
         // recall any tiles on the board first
         this.view.tileRecallEvent.trigger();
-        this.view.showNotification(`${this.game.getCurrentPlayer().name} passed`, 2000);
+        this.view.showNotification(`${this.game.getCurrentPlayer().name} passed`, 'warn', 2000);
         this.game.nextPlayer();
         this.view.setActivePlayer(this.game.whosTurn);
     }
 
     onForfeit() {
         this.view.tileRecallEvent.trigger();
-        this.view.showNotification(`${this.game.getCurrentPlayer().name} forfeits!`, 2000);
+        this.view.showNotification(`${this.game.getCurrentPlayer().name} forfeits!`, 'warn', 2000);
         this.view.deactivatePlayer(this.game.whosTurn);
         this.game.forfeitPlayer(this.game.whosTurn);
 
@@ -429,14 +429,17 @@ export class Controller {
             // Determine winner
             winner = this.determineWinner();
         }
+
+        let winnerIndex = this.game.players.indexOf(winner);
+        this.view.playerCards.forEach((card, i) => {
+            if (i != winnerIndex) { this.view.deactivatePlayer(i) }
+        });
+        this.view.setActivePlayer(winnerIndex);
         
         this.winnerSound.play();
         this.view.hideTileRack();
-        this.view.setActivePlayer(this.game.players.indexOf(winner));
-        this.view.showNotification(`${winner.name.toUpperCase()} wins!`, 30000);
-        setTimeout(() => {
-            this.view.notificationEl.classList.remove('hidden');
-        }, 2100)
+
+        this.view.showNotification(`${winner.name.toUpperCase()} wins!`, 'info', 60000);
     }
 
 }
